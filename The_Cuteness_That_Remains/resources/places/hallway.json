@@ -1,0 +1,12 @@
+{
+  "id": "hallway",
+  "name": "Hallway",
+  "description": "Your in your hallway that lead to the kitchen. The door is to the kitchen is locked tho. Next to you you have the clap for the safty bunker, that is open",
+  "exits": {
+    "down": {
+      "targetPlaceId": "dark-bunker",
+      "isAccessible": true,
+      "blockedMessage": "The gate is locked."
+    }
+  }
+}
