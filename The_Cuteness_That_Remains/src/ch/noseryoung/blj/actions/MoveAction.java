@@ -4,7 +4,7 @@ import ch.noseryoung.blj.engine.Place;
 
 import java.util.Map;
 
-public class HealthChangeAction extends Action {
+public class MoveAction extends Action {
 
     @Override
     public Map<String, Class<?>> getExpectedParams() {

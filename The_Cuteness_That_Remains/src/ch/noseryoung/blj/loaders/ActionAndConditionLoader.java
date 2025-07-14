@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+// todo: seperate action and condition loader
 public class ActionAndConditionLoader {
 
     private Condition condition;
@@ -31,8 +32,8 @@ public class ActionAndConditionLoader {
         registerTypedParams(actionType, actParams, place);
 
         // instantiate behavior objects
-        this.condition = createCondition(conditionType, place);
-        this.action = createAction(actionType, place);
+        this.condition = createCondition(conditionType);
+        this.action = createAction(actionType);
     }
 
     public Condition getCondition() {
@@ -82,7 +83,7 @@ public class ActionAndConditionLoader {
     @SuppressWarnings("unchecked")
     private <T> void insertTypedState(Place place, String key, Object rawValue, Class<T> type, String className) {
         T typedValue = (T) rawValue;
-        place.adsState(className + "_" + key, typedValue, type);
+        place.addState(className + "_" + key, typedValue, type);
     }
 
     private boolean isCompatible(Object value, Class<?> type) {
@@ -100,19 +101,19 @@ public class ActionAndConditionLoader {
         return Map.of();
     }
 
-    private Condition createCondition(String className, Place place) {
+    private Condition createCondition(String className) {
         try {
             Class<?> clazz = Class.forName("ch.noseryoung.blj.conditions." + className);
-            return (Condition) clazz.getConstructor(Place.class).newInstance(place);
+            return (Condition) clazz.getConstructor(Place.class).newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Failed to create condition: " + className, e);
         }
     }
 
-    private Action createAction(String className, Place place) {
+    private Action createAction(String className) {
         try {
             Class<?> clazz = Class.forName("ch.noseryoung.blj.actions." + className);
-            return (Action) clazz.getConstructor(Place.class).newInstance(place);
+            return (Action) clazz.getConstructor(Place.class).newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Failed to create action: " + className, e);
         }

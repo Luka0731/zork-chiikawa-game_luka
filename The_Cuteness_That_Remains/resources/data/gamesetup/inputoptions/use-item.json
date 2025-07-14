@@ -1,0 +1,15 @@
+{
+  "keyword": "use",
+  "params": [
+    {
+      "name": "item",
+      "type": "String"
+    }
+  ],
+  "action": {
+    "type": "UseItemAction",
+    "params": {
+      "direction": "#inputoption_item"
+    }
+  }
+}

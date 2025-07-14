@@ -1,0 +1,46 @@
+{
+  "id": "dark-bunker",
+  "name": "Bunker",
+  "description": "You are in the bunker. It is dark and in the distance you can see eyes. They are small but red and they are getting bigger. What is it? You don't know. Maybe you can talk to it, but you better soon get out of the bunker!",
+
+  "states": {
+    "test": "test"
+  },
+
+  "exits": {
+    "up": {
+      "targetPlaceId": "hallway",
+      "isAccessible": true,
+      "blockedMessage": "The trapdoor is locked. You can't open it."
+    }
+  },
+
+  "conditionalActions": [
+    {
+      "condition": {
+        "type": "RoomTurnsCondition",
+        "params": {
+          "turns": 3
+        }
+      },
+      "action": {
+        "type": "TeleportAction",
+        "params": {
+          "targetPlaceId": "hallway",
+          "teleportMessage": "This thing came so near to you that you got scared, ."
+        }
+      }
+    }
+  ],
+
+  "inputOptions": [
+    {
+      "key": "talk to",
+      "activated": true
+    },
+    {
+      "key": "open inventory",
+      "activated": false
+    }
+  ]
+}

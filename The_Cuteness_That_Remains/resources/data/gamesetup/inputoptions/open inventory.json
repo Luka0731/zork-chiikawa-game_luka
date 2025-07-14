@@ -1,0 +1,7 @@
+{
+  "keyword": "open inventory",
+  "action": {
+    "type": "OpenInventory",
+    "params": {}
+  }
+}

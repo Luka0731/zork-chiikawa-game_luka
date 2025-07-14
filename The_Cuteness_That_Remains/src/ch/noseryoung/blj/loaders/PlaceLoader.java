@@ -3,6 +3,7 @@ package ch.noseryoung.blj.loaders;
 import ch.noseryoung.blj.actions.Action;
 import ch.noseryoung.blj.conditions.Condition;
 import ch.noseryoung.blj.engine.*;
+import ch.noseryoung.blj.util.JsonLoader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,7 +13,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class PlaceLoader {
+public class PlaceLoader extends JsonLoader {
 
     public List<Place> load(String resourceFolder) {
         List<Place> places = new ArrayList<>();
@@ -61,47 +62,35 @@ public class PlaceLoader {
 
             // load conditionalActions
             Map<Condition, Action> conditionActions = new HashMap<>();
-            JSONArray condArray = json.getJSONArray("conditionalActions");
-            for (int i = 0; i < condArray.length(); i++) {
-                JSONObject behaviorJson = condArray.getJSONObject(i);
+            if (json.has("conditionalActions")) {
+                JSONArray condArray = json.getJSONArray("conditionalActions");
+                for (int i = 0; i < condArray.length(); i++) {
+                    JSONObject behaviorJson = condArray.getJSONObject(i);
 
-                JSONObject condJson = behaviorJson.getJSONObject("condition");
-                JSONObject actJson = behaviorJson.getJSONObject("action");
+                    JSONObject condJson = behaviorJson.getJSONObject("condition");
+                    JSONObject actJson = behaviorJson.getJSONObject("action");
 
-                ActionAndConditionLoader actAndConLoader = new ActionAndConditionLoader();
-                actAndConLoader.loadActionAndCondition(condJson, actJson, place);
-                conditionActions.put(actAndConLoader.getCondition(), actAndConLoader.getAction());
+                    ActionAndConditionLoader actAndConLoader = new ActionAndConditionLoader();
+                    actAndConLoader.loadActionAndCondition(condJson, actJson, place);
+                    conditionActions.put(actAndConLoader.getCondition(), actAndConLoader.getAction());
+                }
             }
 
-            place.init(id, name, description, states, exits,  conditionActions);
+            // load inputOptions
+            Map<String, Boolean> inputOptions = new HashMap<>();
+            if (json.has("inputOptions")) {
+                JSONArray inputArray = json.getJSONArray("inputOptions");
+                for (int i = 0; i < inputArray.length(); i++) {
+                    JSONObject inputJson = inputArray.getJSONObject(i);
+                    String key = inputJson.getString("key");
+                    boolean activated = inputJson.optBoolean("activated", true);
+                    inputOptions.put(key, activated);
+                }
+            }
+
+            place.init(id, name, description, states, exits, conditionActions, inputOptions);
             places.add(place);
         }
         return places;
     }
-
-    private String readResourceFile(String filePath) {
-        InputStream stream = PlaceLoader.class.getClassLoader().getResourceAsStream(filePath);
-        if (stream == null) throw new RuntimeException("File not found: " + filePath);
-        Scanner scanner = new Scanner(stream, StandardCharsets.UTF_8).useDelimiter("\\A");
-        return scanner.hasNext() ? scanner.next() : "";
-    }
-
-    private List<String> listJsonFiles(String resourceFolder) {
-        List<String> fileNames = new ArrayList<>();
-        URL folderUrl = PlaceLoader.class.getClassLoader().getResource(resourceFolder);
-        if (folderUrl == null) throw new RuntimeException("Folder not found: " + resourceFolder); // todo: better exceptions
-
-        File folder = new File(folderUrl.getFile());
-        File[] files = folder.listFiles();
-        if (files == null) return fileNames;
-
-        for (File file : files) {
-            if (file.getName().endsWith(".json")) {
-                fileNames.add(resourceFolder + "/" + file.getName());
-            }
-        }
-        return fileNames;
-    }
-
-
 }

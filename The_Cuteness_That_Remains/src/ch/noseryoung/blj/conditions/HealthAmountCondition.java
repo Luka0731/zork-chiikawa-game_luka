@@ -7,10 +7,6 @@ import java.util.Map;
 
 public class HealthAmountCondition extends Condition {
 
-    public HealthAmountCondition(Place currentPlace) {
-        super(currentPlace);
-    }
-
     @Override
     public Map<String, Class<?>> getExpectedParams() {
         return Map.of(
@@ -20,7 +16,7 @@ public class HealthAmountCondition extends Condition {
     }
 
     @Override
-    public boolean test() {
+    public boolean test(Place currentPlace) {
         return false; // todo: make this
     }
 }

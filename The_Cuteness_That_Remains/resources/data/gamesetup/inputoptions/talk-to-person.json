@@ -1,0 +1,15 @@
+{
+  "keyword": "talk to",
+  "params": [
+    {
+      "name": "personName",
+      "type": "String"
+    }
+  ],
+  "action": {
+    "type": "TalkAction",
+    "params": {
+      "direction": "*inputoption_personName"
+    }
+  }
+}

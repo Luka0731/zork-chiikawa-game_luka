@@ -8,16 +8,11 @@ import java.util.Map;
 
 // todo: make action pool for better performance
 public abstract class Action implements ParametrizedBehavior {
-    protected Place currentPlace;
-
-    public Action(Place currentPlace) {
-        this.currentPlace = currentPlace;
-    }
-
-    public abstract void execute();
 
     @Override
     public Map<String, Class<?>> getExpectedParams() {
         return Map.of();
     }
+
+    public abstract void execute(Place currentPlace);
 }

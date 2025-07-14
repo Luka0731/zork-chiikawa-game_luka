@@ -1,0 +1,56 @@
+
+///////// Setting up the game with JSONs /////////
+
+This is a small explanation on how you can set up places, items and more in the game with jsons. It explains the logic
+behind it and shows also the syntax how to do it.
+
+
+
+|--- places ---|
+
+
+
+|--- states ---|
+States is a list, that is designed that any other objects can save variables in it and have access to it, as long
+they also have access to the place. The list states is manly used for communication between objects. Mainly actions and
+conditions will make use of the list states. If making rooms you probably won't need to make any states manually, but
+you still need to know the concept behind it.
+
+Params of an action or a condition get saved in the states like this:
+"actionname_paramname"
+"conditione_paramname"
+"inputoption_paramname"
+
+Everything else, gets saved like this:
+"global_statename"
+
+There are some general settings that you can make in a place. These you can set up manually. Actions and conditions
+will take them into consideration.
+"setting_statename"
+
+
+
+|--- condition ---|
+x
+
+
+
+|--- action ---|
+x
+
+
+
+|--- params of actions and conditions ---|
+x
+
+Normally params of a conditions as an example (exactly the same for an action), it creates a new state in the list.
+The intention of params is, so a teleport action needs to know where it should teleport you. The state will never
+change destination, and it is only used for the communication between the teleport action and the loader. But what if
+you don't want to make your own state but rather use an already existing state and give it through the parameter. Then
+you can use the * symbol in front of the state name and the program will look for that state and give it through the
+parameter. It looks like this:
+"*global_statename"
+
+
+|--- input options ---|
+x

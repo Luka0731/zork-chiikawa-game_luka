@@ -7,10 +7,6 @@ import java.util.Map;
 
 public class TeleportAction extends Action {
 
-    public TeleportAction(Place currentPlace) {
-        super(currentPlace);
-    }
-
     @Override
     public Map<String, Class<?>> getExpectedParams() {
         return Map.of(
@@ -19,7 +15,7 @@ public class TeleportAction extends Action {
     }
 
     @Override
-    public void execute() {
+    public void execute(Place currentPlace) {
         GameScene.getInstance().changePlaceById(currentPlace.getState("TeleportAction_placeId", String.class));
     }
 }

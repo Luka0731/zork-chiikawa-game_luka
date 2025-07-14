@@ -2,7 +2,10 @@ package ch.noseryoung.blj.engine;
 
 import ch.noseryoung.blj.actions.Action;
 import ch.noseryoung.blj.conditions.Condition;
-import ch.noseryoung.blj.input.InputManager;
+import ch.noseryoung.blj.inputmanagement.InputManager;
+import ch.noseryoung.blj.inputmanagement.InputOption;
+import ch.noseryoung.blj.util.frontendSamples.Input;
+
 import java.util.*;
 
 public class Place {
@@ -13,25 +16,37 @@ public class Place {
     private Map<String, Object> states;
     private Map<Direction, Exit> exits;
     private Map<Condition, Action> conditionalActions;
+    private Map<String, Boolean> inputOptions;
     // todo-possible: make it possible that a condition can do multiple actions and a action needs multiple actions
 
     private InputManager inputManager;
 
     public Place() {}
 
-    public void init(String id, String name, String description, Map<String, Object> states, Map<Direction, Exit> exits, Map<Condition, Action> conditionalActions) {
+    public void init(String id, String name, String description, Map<String, Object> states, Map<Direction, Exit> exits, Map<Condition, Action> conditionalActions,  Map<String, Boolean> inputOptions)
+    {
         this.id = id;
         this.name = name;
         this.description = description;
         this.states = states;
         this.exits =  exits;
-        inputManager = new InputManager();
+        this.conditionalActions = conditionalActions;
+        this.inputOptions = inputOptions;
+        inputManager = InputManager.getInstance();
+
+        // global states
+        addState("global_input", null, String.class);
+
+        // default turned on input options
+        inputOptions.put("go", true);
+        inputOptions.put("open inventory", true);
+        inputOptions.put("use", true);
     }
 
     public void update() {
         checkConditions();
         describe();
-        String input = inputManager.getInput(); // todo: noch überarbeiten
+        String input = inputManager.getInput(this);
     }
 
     private void describe() { // todo: make description more flexible
@@ -49,8 +64,8 @@ public class Place {
             for (Map.Entry<Condition, Action> entry : conditionalActions.entrySet()) {
                 Condition condition = entry.getKey();
                 Action action = entry.getValue();
-                if (condition.test()) {
-                    action.execute();
+                if (condition.test(this)) {
+                    action.execute(this);
                 }
             }
         } catch (Exception _) {}
@@ -59,7 +74,7 @@ public class Place {
 
     // |--- states ---|
 
-    public <T> void adsState(String key, T value, Class<T> type) {
+    public <T> void addState(String key, T value, Class<T> type) {
         if (!states.containsKey(key)) {
             if (!type.isInstance(value)) {
                 throw new IllegalArgumentException("Value is not of type " + type.getName());
@@ -84,10 +99,6 @@ public class Place {
         return value.getClass();
     }
 
-    public Map<String, Object> getStates() {
-        return states;
-    }
-
     public <T> void changeState(String key, T newValue, Class<T> type) {
         Object currentValue = states.get(key);
         if (currentValue == null) {
@@ -104,6 +115,10 @@ public class Place {
         return type.isInstance(value);
     }
 
+    public void removeState(String key) {
+        states.remove(key);
+    }
+
 
     // |--- exits ---|
 
@@ -111,15 +126,24 @@ public class Place {
         return exits.get(direction);
     }
 
-    public Map<Direction, Exit> getExits() {
-        return Collections.unmodifiableMap(exits);
-    }
-
 
     // |--- conditional actions ---|
 
     public Map<Condition, Action> getConditionalActions() {
         return Collections.unmodifiableMap(conditionalActions);
+    }
+
+
+    // |--- input options ---|
+
+    public boolean isInputOptionActivated(String key) {
+        return inputOptions.getOrDefault(key, false);
+    }
+
+    private void addDefaultInputOption(String key, boolean defaultValue) {
+        if (!inputOptions.containsKey(key)) {
+            inputOptions.put(key, defaultValue);
+        }
     }
 
 

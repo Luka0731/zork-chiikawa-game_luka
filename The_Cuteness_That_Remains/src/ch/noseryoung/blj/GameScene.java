@@ -17,7 +17,7 @@ public class GameScene extends Scene {
 
     private GameScene() {
         PlaceLoader placeLoader = new PlaceLoader();
-        places = placeLoader.load("places");
+        places = placeLoader.load("data/gamesetup/places");
 
         currentPlace = places.getFirst();
     }
@@ -56,7 +56,6 @@ public class GameScene extends Scene {
     }
 
 
-
     // |--- getters & setter ---|
-
+    // todo
 }
